@@ -12,13 +12,15 @@ type SignInOptions = {
 export const cloudAuth = {
   auth: {
     signInWithOAuth: async (provider: "google" | "apple" | "microsoft", opts?: SignInOptions) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await internalAuth.signInWithOAuth(provider as any, {
-        redirect_uri: opts?.redirect_uri,
-        extraParams: {
-          ...opts?.extraParams,
+      const result = await internalAuth.signInWithOAuth(
+        provider as Parameters<typeof internalAuth.signInWithOAuth>[0],
+        {
+          redirect_uri: opts?.redirect_uri,
+          extraParams: {
+            ...opts?.extraParams,
+          },
         },
-      });
+      );
 
       if (result.redirected) {
         return result;

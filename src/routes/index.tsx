@@ -120,12 +120,10 @@ type ExtractedFrame = {
   joints?: Record<string, { x: number; y: number; confidence: number }>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let poseLandmarkerInstance: any = null;
 const getPoseLandmarker = async () => {
   if (poseLandmarkerInstance) return poseLandmarkerInstance;
   const visionModule = await import(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/vision_bundle.mjs" as any
   );
   const vision = await visionModule.FilesetResolver.forVisionTasks(
@@ -142,10 +140,9 @@ const getPoseLandmarker = async () => {
   return poseLandmarkerInstance;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mapMediaPipeToKinetIQ = (landmarks: any[]) => {
   if (!landmarks || landmarks.length === 0) return undefined;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const getConf = (lm: any) => (lm.visibility !== undefined ? lm.visibility : lm.presence || 1.0);
 
   const neck = {
@@ -209,7 +206,7 @@ function Index() {
 
   const [history, setHistory] = useState<SavedAnalysis[]>([]);
   const [compareWith, setCompareWith] = useState<SavedAnalysis | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
@@ -253,9 +250,9 @@ function Index() {
       notes: string;
       durationSec: number;
       frames: ExtractedFrame[];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       profile?: any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       pastAnalyses?: any[];
       model?: string;
     }) => (await analyze({ data: payload })) as AnalysisResult,
@@ -341,7 +338,6 @@ function Index() {
       smallCanvas.height = smallH;
       const smallCtx = smallCanvas.getContext("2d")!;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let landmarker: any = null;
       try {
         landmarker = await getPoseLandmarker();
@@ -352,7 +348,7 @@ function Index() {
       const captured: ExtractedFrame[] = [];
       for (const t of timestamps) {
         await new Promise<void>((resolve) => {
-          // eslint-disable-next-line prefer-const, @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line prefer-const
           let timeoutId: any;
           const onSeeked = () => {
             video.removeEventListener("seeked", onSeeked);
@@ -742,10 +738,7 @@ function Header() {
 
   useEffect(() => {
     const checkRole = async (userId: string) => {
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId);
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
       if (data && data.some((r) => r.role === "coach")) {
         setIsCoach(true);
       } else {
@@ -1644,20 +1637,19 @@ function Report({
   frames: ExtractedFrame[];
   onSeek: (t: number) => void;
   compareWith: SavedAnalysis | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   profile?: any;
   hasHistory?: boolean;
 }) {
   const [showAngles, setShowAngles] = useState(false);
   const [annotations, setAnnotations] = useState<Record<number, string>>(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (result as any).annotations || {};
   });
 
   const saveAnnotation = (frameIndex: number, text: string) => {
     const next = { ...annotations, [frameIndex]: text };
     setAnnotations(next);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     (result as any).annotations = next;
 
     // update localStorage history entry
@@ -1666,7 +1658,6 @@ function Report({
       const updatedHistory = currentHistory.map((item) => {
         if (
           item.result.movementSummary === result.movementSummary &&
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           item.createdAt === (result as any).createdAt
         ) {
           return {
@@ -1674,7 +1665,6 @@ function Report({
             result: {
               ...item.result,
               annotations: next,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
           };
         }
